@@ -2,61 +2,215 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Happy Birthday ❤️</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
 
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #ffffff;
+      background: #000;
+      scroll-behavior: smooth;
+    }
+
+    section {
+      min-height: 100vh;
+      padding: 80px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+    }
+
+    .content {
+      position: relative;
+      max-width: 900px;
+      z-index: 2;
+      animation: fadeUp 1.2s ease forwards;
+    }
+
+    h1, h2 {
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 3rem;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      opacity: 0.95;
+    }
+
+    /* Hero */
+    .hero {
+      background: url("https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600") center/cover no-repeat;
+    }
+
+    /* Message */
+    .message {
+      background: linear-gradient(135deg, #2c2c2c, #3a2f2f);
+    }
+
+    /* Cards */
+    .cards {
+      background: url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600") center/cover no-repeat;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.08);
+      padding: 25px;
+      border-radius: 14px;
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+    }
+
+    /* Promise */
+    .promise {
+      background: url("https://images.unsplash.com/photo-1500534314209-a26db0f5a1a2?q=80&w=1600") center/cover no-repeat;
+    }
+
+    /* Final */
+    .final {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    }
+
+    footer {
+      padding: 30px;
+      text-align: center;
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+      h2 {
+        font-size: 1.8rem;
+      }
+      p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
 <body>
 
-  <!-- Hero Section -->
-  <section class="section hero">
-    <h1>Happy Birthday ❤️</h1>
-    <p>Scroll down slowly… I built this for you</p>
-    <span class="arrow">⬇️</span>
-  </section>
-
-  <!-- Photo Section -->
-  <section class="section photo-section">
-    <div class="card" id="photoCard">
-      <img src="images/photo1.jpg" id="mainPhoto" />
-    </div>
-    <p class="hint">Click the photo 📸</p>
-  </section>
-
-  <!-- Message Section -->
-  <section class="section message-section">
-    <h2>One thing I want you to know 💖</h2>
-    <p id="dynamicMessage">
-      This page reacts to you… just like I do 🙂
-    </p>
-    <button id="revealBtn">Reveal surprise 🎁</button>
-  </section>
-
-  <!-- Memories Section -->
-  <section class="section memories">
-    <h2>Our memories 📸</h2>
-    <div class="gallery">
-      <img src="images/photo1.jpg" />
-      <img src="images/photo2.jpg" />
-      <img src="images/photo3.jpg" />
+  <!-- HERO -->
+  <section class="hero">
+    <div class="overlay"></div>
+    <div class="content">
+      <h1>Happy Birthday, My Love ❤️</h1>
+      <p>This little corner of the internet is just for you.</p>
     </div>
   </section>
 
-  <!-- Final Section -->
-  <section class="section final">
-    <h2>You reached the end ❤️</h2>
-    <p>
-      I didn’t buy a gift.<br />
-      I didn’t order one.<br /><br />
-      I wrote code…<br />
-      because you are worth the effort.
-    </p>
-    <p class="small">Scroll up once more ⬆️</p>
+  <!-- MESSAGE -->
+  <section class="message">
+    <div class="content">
+      <h2>From My Heart</h2>
+      <p>
+        To the man who makes life feel lighter and safer,<br><br>
+        You are my strength on difficult days,<br>
+        my calm in chaos,<br>
+        and my happiness in the simplest moments.<br><br>
+        Loving you feels natural, easy, and right.<br>
+        Thank you for being patient, supportive, and endlessly caring.<br><br>
+        On your birthday, I just want you to know —<br>
+        you are deeply loved, admired, and appreciated… always 🤍
+      </p>
+    </div>
   </section>
 
-  <audio id="bgMusic" src="music.mp3"></audio>
+  <!-- FUN CARDS -->
+  <section class="cards">
+    <div class="overlay"></div>
+    <div class="content">
+      <h2>A Few Reasons You’re Amazing 😄</h2>
+      <div class="card-grid">
+        <div class="card">You make ordinary days feel special</div>
+        <div class="card">You care deeply, even when you don’t say it</div>
+        <div class="card">You’re stronger than you realize</div>
+        <div class="card">You make me feel incredibly lucky</div>
+      </div>
+    </div>
+  </section>
 
-  <script src="script.js"></script>
+  <!-- PROMISE -->
+  <section class="promise">
+    <div class="overlay"></div>
+    <div class="content">
+      <h2>Always & Forever</h2>
+      <p>
+        I don’t need a special day to celebrate you,<br>
+        but I’m grateful for one that reminds the world<br>
+        how special you truly are.<br><br>
+        I look forward to every tomorrow with you —<br>
+        with trust, love, and lots of laughter 💫
+      </p>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section class="final">
+    <div class="content">
+      <h1>Happy Birthday ❤️</h1>
+      <p>
+        May this year bring you peace, success, good health,<br>
+        and everything your heart quietly wishes for.<br><br>
+        I’m always cheering for you — today and forever 🎂✨
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    Made with love 💛
+  </footer>
+
 </body>
 </html>
