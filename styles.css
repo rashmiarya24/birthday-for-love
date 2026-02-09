@@ -1,0 +1,96 @@
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+}
+
+body {
+  margin: 0;
+  scroll-behavior: smooth;
+  background: #111;
+  color: white;
+}
+
+.section {
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Sections */
+.hero {
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+}
+
+.photo-section {
+  background: #1a1a1a;
+}
+
+.message-section {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+.memories {
+  background: #111;
+}
+
+.final {
+  background: linear-gradient(135deg, #ff4b6e, #ff758c);
+}
+
+/* Card */
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  transition: transform 0.3s ease;
+}
+
+.card img {
+  width: 280px;
+  border-radius: 16px;
+}
+
+/* Gallery */
+.gallery {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.gallery img {
+  width: 90px;
+  border-radius: 12px;
+}
+
+/* Buttons */
+button {
+  margin-top: 20px;
+  padding: 14px 28px;
+  border-radius: 30px;
+  border: none;
+  background: white;
+  color: #333;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.hint, .small {
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.arrow {
+  font-size: 30px;
+  margin-top: 20px;
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
