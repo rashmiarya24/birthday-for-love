@@ -21,12 +21,12 @@ body{
   justify-content:center;
 }
 
-/* Floating balloons */
+/* Balloons */
 .balloon{
   position:absolute;
   bottom:-150px;
-  width:60px;
-  height:80px;
+  width:55px;
+  height:75px;
   border-radius:50%;
   animation:float 10s linear infinite;
 }
@@ -37,74 +37,109 @@ body{
   height:60px;
   background:#fff;
   left:50%;
-  top:80px;
+  top:75px;
 }
-.b1{left:10%;background:#ff6f91;animation-delay:0s}
-.b2{left:30%;background:#ffc75f;animation-delay:2s}
+.b1{left:8%;background:#ff6f91}
+.b2{left:28%;background:#ffc75f;animation-delay:2s}
 .b3{left:55%;background:#845ec2;animation-delay:4s}
-.b4{left:75%;background:#4d96ff;animation-delay:1s}
+.b4{left:78%;background:#4d96ff;animation-delay:1s}
 
 @keyframes float{
-  from{transform:translateY(0)}
   to{transform:translateY(-120vh)}
 }
 
 /* Card */
 .card{
   background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(12px);
-  border-radius:22px;
-  padding:40px 30px;
+  backdrop-filter:blur(14px);
+  border-radius:24px;
+  padding:35px 25px;
   width:90%;
   max-width:420px;
   text-align:center;
-  box-shadow:0 0 40px rgba(255,215,150,0.25);
+  box-shadow:0 0 45px rgba(255,215,150,0.3);
   animation:heartbeat 3s infinite;
 }
 
 @keyframes heartbeat{
   0%,100%{transform:scale(1)}
-  50%{transform:scale(1.015)}
+  50%{transform:scale(1.02)}
 }
 
 h1{
   font-family:'Playfair Display',serif;
-  font-size:2.2rem;
-  margin-bottom:10px;
+  font-size:2.1rem;
 }
 
 .message{
   font-size:1rem;
   line-height:1.6;
-  margin:20px 0;
-  opacity:0;
+  margin:18px 0;
   animation:fadeIn 1.5s forwards;
-  animation-delay:1s;
 }
 
 @keyframes fadeIn{
+  from{opacity:0}
   to{opacity:1}
+}
+
+/* Cake */
+.cake{
+  margin:20px auto;
+  width:140px;
+}
+.layer{
+  background:#ffb703;
+  height:35px;
+  border-radius:10px;
+  margin:4px 0;
+}
+.layer.middle{background:#fb8500}
+.layer.top{background:#ffd166}
+
+.candle{
+  width:10px;
+  height:35px;
+  background:#fff;
+  margin:0 auto;
+  position:relative;
+  border-radius:4px;
+}
+.flame{
+  width:14px;
+  height:22px;
+  background:orange;
+  position:absolute;
+  top:-20px;
+  left:-2px;
+  border-radius:50%;
+  animation:flicker .15s infinite;
+}
+
+@keyframes flicker{
+  0%{transform:scale(1)}
+  50%{transform:scale(0.9)}
+  100%{transform:scale(1)}
 }
 
 /* Buttons */
 .btn{
-  margin-top:15px;
-  padding:12px 20px;
+  margin-top:12px;
+  padding:11px 18px;
   border:none;
   border-radius:25px;
   background:linear-gradient(135deg,#ffb347,#ffcc33);
   color:#000;
   font-weight:600;
   cursor:pointer;
-  transition:transform .2s;
+  transition:.2s;
 }
-.btn:hover{transform:scale(1.08)}
+.btn:hover{transform:scale(1.1)}
 
-/* Hidden surprise text */
 .surprise{
-  margin-top:15px;
+  margin-top:12px;
   display:none;
-  font-size:0.95rem;
+  font-size:.95rem;
   color:#ffd6a5;
 }
 
@@ -113,7 +148,6 @@ h1{
   position:absolute;
   width:8px;
   height:14px;
-  background:red;
   top:-10px;
   animation:confetti 3s linear infinite;
 }
@@ -132,9 +166,20 @@ h1{
 <div class="balloon b3"></div>
 <div class="balloon b4"></div>
 
-<!-- Card -->
 <div class="card">
   <h1>Happy Birthday ❤️</h1>
+
+  <!-- Cake -->
+  <div class="cake">
+    <div class="candle">
+      <div class="flame" id="flame"></div>
+    </div>
+    <div class="layer top"></div>
+    <div class="layer middle"></div>
+    <div class="layer"></div>
+  </div>
+
+  <p style="font-size:.9rem;opacity:.8;">Tap the cake to blow the candle 💨</p>
 
   <div class="message">
     To the man who makes life calmer, brighter, and better just by being in it ✨  
@@ -142,7 +187,7 @@ h1{
     You are deeply loved, endlessly appreciated, and celebrated today — and always.
   </div>
 
-  <button class="btn" onclick="popper()">🎉 Tap for a Surprise</button>
+  <button class="btn" onclick="popper()">🎉 Birthday Popper</button>
   <div class="surprise" id="surprise">
     I’m so lucky to walk life with you 💛  
     May this year bring smiles, success, and peace.
@@ -152,9 +197,15 @@ h1{
 </div>
 
 <script>
+const flame=document.getElementById("flame");
+document.querySelector(".cake").onclick=()=>{
+  flame.style.display="none";
+  popper();
+};
+
 function popper(){
   document.getElementById("surprise").style.display="block";
-  for(let i=0;i<25;i++){
+  for(let i=0;i<30;i++){
     let c=document.createElement("div");
     c.className="confetti";
     c.style.left=Math.random()*100+"vw";
