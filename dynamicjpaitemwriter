@@ -1,4 +1,4 @@
-ackage com.batch.writer;
+package com.batch.writer;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
