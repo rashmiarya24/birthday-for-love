@@ -1,0 +1,100 @@
+package com.batch.mapper;
+
+import com.batch.model.CsvFileMetadata;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.*;
+import java.util.stream.Stream;
+
+/**
+ * Scans the configured input folder for *.csv.gz files and maps
+ * each file to the correct JPA entity class using a name-pattern registry.
+ *
+ * ────────────────────────────────────────────────────────────
+ * HOW TO REGISTER YOUR OWN MAPPINGS
+ *   Add one entry per file pattern → entity class in FILE_REGISTRY below.
+ *   The pattern is matched against the lowercase file name using
+ *   String#contains(), so "product" matches "products_2024.csv.gz".
+ * ────────────────────────────────────────────────────────────
+ */
+@Slf4j
+@Component
+public class FileToEntityRegistry {
+
+    @Value("${batch.csv.input-folder}")
+    private String inputFolder;
+
+    /**
+     * Registry: file-name keyword  →  entity class.
+     * Add / modify entries to match your actual file names.
+     */
+    private static final Map<String, Class<?>> FILE_REGISTRY = new LinkedHashMap<>();
+
+    static {
+        // pattern (lowercase)            →  entity class
+        FILE_REGISTRY.put("product",     tryLoad("com.batch.model.Product"));
+        FILE_REGISTRY.put("order",       tryLoad("com.batch.model.Order"));
+        FILE_REGISTRY.put("customer",    tryLoad("com.batch.model.Customer"));
+        // ── add more mappings here ──────────────────────────
+        // FILE_REGISTRY.put("invoice",  Invoice.class);
+        // FILE_REGISTRY.put("shipment", Shipment.class);
+    }
+
+    /**
+     * Scan the input folder and return metadata for every .csv.gz file found.
+     * Files are ordered alphabetically for deterministic processing.
+     */
+    public List<CsvFileMetadata> discoverFiles() throws IOException {
+        Path folder = Paths.get(inputFolder);
+
+        if (!Files.exists(folder)) {
+            throw new IllegalArgumentException("Input folder does not exist: " + folder);
+        }
+
+        List<CsvFileMetadata> files = new ArrayList<>();
+
+        try (Stream<Path> stream = Files.walk(folder, 1)) {
+            stream
+                .filter(Files::isRegularFile)
+                .filter(p -> p.getFileName().toString().endsWith(".csv.gz"))
+                .sorted()
+                .forEach(path -> {
+                    Class<?> entity = resolveEntityClass(path);
+                    if (entity != null) {
+                        files.add(new CsvFileMetadata(path, entity));
+                        log.info("Discovered file: {} → {}", path.getFileName(), entity.getSimpleName());
+                    } else {
+                        log.warn("No entity mapping found for file: {} — SKIPPING", path.getFileName());
+                    }
+                });
+        }
+
+        log.info("Total files to process: {}", files.size());
+        return files;
+    }
+
+    /** Match the file name against the registry (first match wins). */
+    private Class<?> resolveEntityClass(Path filePath) {
+        String lowerName = filePath.getFileName().toString().toLowerCase();
+        return FILE_REGISTRY.entrySet().stream()
+            .filter(e -> lowerName.contains(e.getKey()))
+            .map(Map.Entry::getValue)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .orElse(null);
+    }
+
+    /** Safe class loader — logs warning if class not found (avoids hard static-init failure). */
+    private static Class<?> tryLoad(String className) {
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            // Will be logged at startup
+            return null;
+        }
+    }
+}
