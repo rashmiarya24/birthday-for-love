@@ -1,0 +1,29 @@
+package com.batch.config;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.SkipListener;
+import org.springframework.stereotype.Component;
+
+/**
+ * Logs every skipped item (read/process/write error) without stopping the job.
+ * The skip-limit is controlled by batch.skip-limit in application.yml.
+ */
+@Slf4j
+@Component
+public class BatchSkipListener implements SkipListener<Object, Object> {
+
+    @Override
+    public void onSkipInRead(Throwable t) {
+        log.warn("SKIP on READ — {}", t.getMessage());
+    }
+
+    @Override
+    public void onSkipInProcess(Object item, Throwable t) {
+        log.warn("SKIP on PROCESS — item={} error={}", item, t.getMessage());
+    }
+
+    @Override
+    public void onSkipInWrite(Object item, Throwable t) {
+        log.warn("SKIP on WRITE — item={} error={}", item, t.getMessage());
+    }
+}
