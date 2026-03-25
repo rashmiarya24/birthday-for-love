@@ -1,0 +1,44 @@
+package com.batch.config;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.*;
+import org.springframework.batch.core.annotation.*;
+import org.springframework.stereotype.Component;
+
+/**
+ * Job-level listener: logs timing and outcome for each job run.
+ */
+@Slf4j
+@Component
+public class BatchJobListener implements JobExecutionListener {
+
+    @Override
+    public void beforeJob(JobExecution jobExecution) {
+        log.info("========================================");
+        log.info("JOB STARTED : {}", jobExecution.getJobInstance().getJobName());
+        log.info("Parameters  : {}", jobExecution.getJobParameters());
+        log.info("========================================");
+    }
+
+    @Override
+    public void afterJob(JobExecution jobExecution) {
+        long duration = jobExecution.getEndTime() != null && jobExecution.getStartTime() != null
+            ? java.time.Duration.between(jobExecution.getStartTime(), jobExecution.getEndTime()).toSeconds()
+            : -1;
+
+        log.info("========================================");
+        log.info("JOB FINISHED: {}", jobExecution.getJobInstance().getJobName());
+        log.info("Status      : {}", jobExecution.getStatus());
+        log.info("Duration    : {}s", duration);
+
+        jobExecution.getStepExecutions().forEach(step ->
+            log.info("  Step [{}] read={} written={} skipped={} status={}",
+                step.getStepName(),
+                step.getReadCount(),
+                step.getWriteCount(),
+                step.getSkipCount(),
+                step.getStatus()));
+
+        log.info("========================================");
+    }
+}
