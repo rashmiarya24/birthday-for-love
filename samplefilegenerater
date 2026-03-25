@@ -1,0 +1,66 @@
+package com.batch.util;
+
+import java.io.*;
+import java.nio.file.*;
+import java.util.zip.GZIPOutputStream;
+
+/**
+ * Development utility: generates sample .csv.gz files
+ * so you can test the batch without real data.
+ *
+ * Run main() directly in your IDE or as a standalone main class.
+ */
+public class SampleFileGenerator {
+
+    public static void main(String[] args) throws Exception {
+        Path outputDir = Paths.get("sample-data");
+        Files.createDirectories(outputDir);
+
+        generateProductsCsv(outputDir);
+        generateOrdersCsv(outputDir);
+        generateCustomersCsv(outputDir);
+
+        System.out.println("Sample files created in: " + outputDir.toAbsolutePath());
+    }
+
+    private static void generateProductsCsv(Path dir) throws Exception {
+        Path file = dir.resolve("products_2024.csv.gz");
+        try (Writer w = gzipWriter(file)) {
+            w.write("sku,product_name,category,price,stock_quantity\n");
+            for (int i = 1; i <= 1000; i++) {
+                w.write(String.format("SKU-%04d,Product %d,Category-%d,%.2f,%d\n",
+                    i, i, (i % 5) + 1, 10.0 + i * 0.5, i * 10));
+            }
+        }
+        System.out.println("Created: " + file);
+    }
+
+    private static void generateOrdersCsv(Path dir) throws Exception {
+        Path file = dir.resolve("orders_2024.csv.gz");
+        try (Writer w = gzipWriter(file)) {
+            w.write("order_number,customer_id,order_date,total_amount,status\n");
+            for (int i = 1; i <= 1000; i++) {
+                w.write(String.format("ORD-%06d,%d,2024-01-%02d,%.2f,%s\n",
+                    i, (i % 100) + 1, (i % 28) + 1, 50.0 + i, i % 2 == 0 ? "COMPLETED" : "PENDING"));
+            }
+        }
+        System.out.println("Created: " + file);
+    }
+
+    private static void generateCustomersCsv(Path dir) throws Exception {
+        Path file = dir.resolve("customers_2024.csv.gz");
+        try (Writer w = gzipWriter(file)) {
+            w.write("first_name,last_name,email,phone,country\n");
+            for (int i = 1; i <= 500; i++) {
+                w.write(String.format("First%d,Last%d,user%d@example.com,+1-555-%04d,US\n",
+                    i, i, i, i));
+            }
+        }
+        System.out.println("Created: " + file);
+    }
+
+    private static Writer gzipWriter(Path path) throws Exception {
+        return new OutputStreamWriter(
+            new GZIPOutputStream(new BufferedOutputStream(Files.newOutputStream(path))));
+    }
+}
