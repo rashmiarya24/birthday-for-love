@@ -1,0 +1,49 @@
+ackage com.batch.writer;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.Chunk;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.stereotype.Component;
+
+/**
+ * Generic JPA ItemWriter that persists ANY entity type in one batch.
+ *
+ * Uses EntityManager#persist() inside a Spring-managed transaction
+ * (Spring Batch opens/commits a transaction per chunk automatically).
+ *
+ * Performance tricks applied:
+ *  - rewriteBatchedStatements=true  in JDBC URL → single round-trip per chunk
+ *  - Hibernate batch_size=500       → groups inserts at JDBC level
+ *  - flush + clear every N records  → prevents OutOfMemory on large chunks
+ */
+@Slf4j
+@Component
+public class DynamicJpaItemWriter implements ItemWriter<Object> {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    /** Flush & clear the 1st-level cache every this many inserts. */
+    private static final int FLUSH_EVERY = 100;
+
+    @Override
+    public void write(Chunk<?> chunk) {
+        int i = 0;
+        for (Object item : chunk.getItems()) {
+            entityManager.persist(item);
+            if (++i % FLUSH_EVERY == 0) {
+                entityManager.flush();
+                entityManager.clear();
+            }
+        }
+        // Final flush for any remaining items (Spring Batch commits after this)
+        entityManager.flush();
+        entityManager.clear();
+
+        log.debug("Wrote chunk of {} records (type={})",
+                  chunk.size(),
+                  chunk.isEmpty() ? "none" : chunk.getItems().get(0).getClass().getSimpleName());
+    }
+}
